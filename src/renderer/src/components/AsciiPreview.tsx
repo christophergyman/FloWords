@@ -34,9 +34,8 @@ export function AsciiPreview({
 
   return (
     <div
+      className="terminal-panel"
       style={{
-        backgroundColor: '#0a0a0a',
-        borderLeft: '1px solid #333',
         display: 'flex',
         flexDirection: 'column',
         height: '100%'
@@ -44,34 +43,34 @@ export function AsciiPreview({
     >
       {/* Toolbar */}
       <div
+        className="terminal-header"
         style={{
           padding: '8px 12px',
-          borderBottom: '1px solid #333',
           display: 'flex',
           gap: 8,
           alignItems: 'center',
           flexWrap: 'wrap'
         }}
       >
-        <button onClick={onToggleMode} style={buttonStyle}>
+        <button onClick={onToggleMode} className="terminal-btn">
           {mode === 'architecture' ? 'Arch' : 'Wire'}
         </button>
-        <button onClick={onZoomOut} style={buttonStyle}>
+        <button onClick={onZoomOut} className="terminal-btn">
           -
         </button>
-        <span style={{ color: '#d4a017', fontFamily: 'monospace', fontSize: 12 }}>
+        <span className="terminal-text" style={{ fontSize: 12 }}>
           {zoom === 0 ? 'auto' : `${zoom.toFixed(1)}x`}
         </span>
-        <button onClick={onZoomIn} style={buttonStyle}>
+        <button onClick={onZoomIn} className="terminal-btn">
           +
         </button>
-        <button onClick={onAutoFit} style={buttonStyle}>
+        <button onClick={onAutoFit} className="terminal-btn">
           Fit
         </button>
-        <button onClick={onRefresh} style={buttonStyle}>
+        <button onClick={onRefresh} className="terminal-btn">
           Refresh
         </button>
-        <button onClick={handleCopy} style={buttonStyle}>
+        <button onClick={handleCopy} className="terminal-btn">
           {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
@@ -85,9 +84,8 @@ export function AsciiPreview({
         }}
       >
         <pre
+          className="terminal-text"
           style={{
-            color: '#d4a017',
-            fontFamily: "'Courier New', Courier, monospace",
             fontSize: 11,
             lineHeight: 1.2,
             margin: 0,
@@ -100,11 +98,11 @@ export function AsciiPreview({
         {/* Color annotations */}
         {result && result.colors.length > 0 && (
           <div
+            className="terminal-text"
             style={{
               marginTop: 16,
               paddingTop: 8,
-              borderTop: '1px solid #333',
-              fontFamily: 'monospace',
+              borderTop: '1px solid var(--term-border)',
               fontSize: 11,
               color: '#888'
             }}
@@ -119,15 +117,4 @@ export function AsciiPreview({
       </div>
     </div>
   )
-}
-
-const buttonStyle: React.CSSProperties = {
-  background: '#222',
-  color: '#d4a017',
-  border: '1px solid #444',
-  borderRadius: 4,
-  padding: '4px 10px',
-  fontFamily: 'monospace',
-  fontSize: 12,
-  cursor: 'pointer'
 }

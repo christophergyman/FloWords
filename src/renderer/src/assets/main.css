@@ -1,7 +1,146 @@
 @import "tailwindcss";
 
+:root {
+  --term-amber: #d4a017;
+  --term-amber-bright: #e8b624;
+  --term-amber-dim: #8a6a10;
+  --term-amber-glow: rgba(212, 160, 23, 0.6);
+  --term-amber-glow-soft: rgba(212, 160, 23, 0.3);
+  --term-bg: #0a0a0a;
+  --term-bg-panel: #111111;
+  --term-bg-elevated: #1a1a1a;
+  --term-bg-input: #222222;
+  --term-border: #333333;
+  --term-border-bright: #444444;
+  --term-font: 'IBM Plex Mono', 'Courier New', Courier, monospace;
+}
+
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+/* ── Terminal Panel ─────────────────────────────────────── */
+.terminal-panel {
+  position: relative;
+  background-color: var(--term-bg-panel);
+  box-shadow: inset 0 0 60px rgba(212, 160, 23, 0.03), 0 0 15px rgba(212, 160, 23, 0.05);
+}
+
+.terminal-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 0, 0, 0.15) 1px,
+    rgba(0, 0, 0, 0.15) 2px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Terminal Text ──────────────────────────────────────── */
+.terminal-text {
+  font-family: var(--term-font);
+  color: var(--term-amber);
+  text-shadow:
+    0 0 4px var(--term-amber-glow-soft),
+    0 0 8px rgba(212, 160, 23, 0.15);
+}
+
+/* ── Terminal Header ────────────────────────────────────── */
+.terminal-header {
+  font-family: var(--term-font);
+  color: var(--term-amber-bright);
+  border-bottom: 1px solid var(--term-border);
+  text-shadow:
+    0 0 6px var(--term-amber-glow),
+    0 0 12px rgba(212, 160, 23, 0.2);
+}
+
+/* ── Terminal Button ────────────────────────────────────── */
+.terminal-btn {
+  background: var(--term-bg-input);
+  color: var(--term-amber);
+  border: 1px solid var(--term-border-bright);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: var(--term-font);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-shadow: 0 0 4px var(--term-amber-glow-soft);
+}
+
+.terminal-btn:hover {
+  border-color: var(--term-amber-dim);
+  background: var(--term-bg-elevated);
+  color: var(--term-amber-bright);
+  box-shadow: 0 0 8px rgba(212, 160, 23, 0.2), inset 0 0 8px rgba(212, 160, 23, 0.05);
+  text-shadow: 0 0 6px var(--term-amber-glow);
+}
+
+.terminal-btn:active {
+  background: var(--term-amber);
+  color: var(--term-bg);
+  text-shadow: none;
+  box-shadow: 0 0 12px var(--term-amber-glow);
+}
+
+/* ── File Items ─────────────────────────────────────────── */
+.terminal-file-item {
+  padding: 6px 12px;
+  font-family: var(--term-font);
+  font-size: 11px;
+  color: var(--term-amber);
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all 0.15s;
+  text-shadow: 0 0 4px var(--term-amber-glow-soft);
+}
+
+.terminal-file-item:hover {
+  background: var(--term-bg-elevated);
+}
+
+.terminal-file-item--active {
+  background: var(--term-amber);
+  color: var(--term-bg);
+  text-shadow: none;
+}
+
+.terminal-file-item--active:hover {
+  background: var(--term-amber-bright);
+}
+
+/* ── Divider ────────────────────────────────────────────── */
+.terminal-divider {
+  background-color: var(--term-bg-elevated);
+  border-left: 1px solid var(--term-border);
+  border-right: 1px solid var(--term-border);
+}
+
+/* ── Scrollbars ─────────────────────────────────────────── */
+.terminal-panel *::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-panel *::-webkit-scrollbar-track {
+  background: var(--term-bg);
+}
+
+.terminal-panel *::-webkit-scrollbar-thumb {
+  background: var(--term-border);
+  border-radius: 3px;
+}
+
+.terminal-panel *::-webkit-scrollbar-thumb:hover {
+  background: var(--term-amber-dim);
 }

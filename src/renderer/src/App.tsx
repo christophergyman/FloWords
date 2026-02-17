@@ -114,12 +114,10 @@ export default function App(): React.JSX.Element {
           {/* Drag divider */}
           <div
             onMouseDown={onDividerMouseDown}
+            className="terminal-divider"
             style={{
               width: 6,
               cursor: 'col-resize',
-              backgroundColor: '#1a1a1a',
-              borderLeft: '1px solid #333',
-              borderRight: '1px solid #333',
               flexShrink: 0
             }}
           />
@@ -141,12 +139,12 @@ export default function App(): React.JSX.Element {
       {/* Toggle sidebar button */}
       <button
         onClick={() => setShowSidebar((s) => !s)}
+        className="terminal-btn"
         style={{
           position: 'fixed',
           top: 8,
           left: showSidebar ? 208 : 8,
-          zIndex: 1000,
-          ...buttonStyle
+          zIndex: 1000
         }}
       >
         {showSidebar ? '<' : '>'}
@@ -155,27 +153,16 @@ export default function App(): React.JSX.Element {
       {/* Toggle preview button */}
       <button
         onClick={() => setShowPreview((s) => !s)}
+        className="terminal-btn"
         style={{
           position: 'fixed',
           top: 8,
           right: showPreview ? previewWidth + 14 : 8,
-          zIndex: 1000,
-          ...buttonStyle
+          zIndex: 1000
         }}
       >
         {showPreview ? '>' : '<'}
       </button>
     </div>
   )
-}
-
-const buttonStyle: React.CSSProperties = {
-  background: '#222',
-  color: '#d4a017',
-  border: '1px solid #444',
-  borderRadius: 4,
-  padding: '4px 10px',
-  fontFamily: 'monospace',
-  fontSize: 12,
-  cursor: 'pointer'
 }

@@ -18,10 +18,9 @@ export function FileSidebar({
 }: FileSidebarProps): React.JSX.Element {
   return (
     <div
+      className="terminal-panel"
       style={{
         width: 200,
-        backgroundColor: '#111',
-        borderRight: '1px solid #333',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 0,
@@ -30,13 +29,11 @@ export function FileSidebar({
     >
       {/* Header */}
       <div
+        className="terminal-header"
         style={{
           padding: '10px 12px 6px',
-          fontFamily: 'monospace',
           fontSize: 13,
-          fontWeight: 'bold',
-          color: '#d4a017',
-          borderBottom: '1px solid #333'
+          fontWeight: 'bold'
         }}
       >
         Files
@@ -48,13 +45,13 @@ export function FileSidebar({
           padding: '8px 12px',
           display: 'flex',
           gap: 8,
-          borderBottom: '1px solid #333'
+          borderBottom: '1px solid var(--term-border)'
         }}
       >
-        <button onClick={onNew} style={buttonStyle}>
+        <button onClick={onNew} className="terminal-btn" style={{ flex: 1 }}>
           New
         </button>
-        <button onClick={onSave} style={buttonStyle}>
+        <button onClick={onSave} className="terminal-btn" style={{ flex: 1 }}>
           Save
         </button>
       </div>
@@ -63,11 +60,11 @@ export function FileSidebar({
       <div style={{ flex: 1, overflow: 'auto' }}>
         {files.length === 0 && (
           <div
+            className="terminal-text"
             style={{
               padding: '12px',
-              fontFamily: 'monospace',
               fontSize: 11,
-              color: '#666'
+              color: 'var(--term-text-dim)'
             }}
           >
             No saved files
@@ -77,17 +74,10 @@ export function FileSidebar({
           <div
             key={f.name}
             onClick={() => onFileSelect(f.name)}
-            style={{
-              padding: '6px 12px',
-              fontFamily: 'monospace',
-              fontSize: 11,
-              color: f.name === currentFileName ? '#0a0a0a' : '#d4a017',
-              backgroundColor: f.name === currentFileName ? '#d4a017' : 'transparent',
-              cursor: 'pointer',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}
+            className={
+              'terminal-file-item' +
+              (f.name === currentFileName ? ' terminal-file-item--active' : '')
+            }
           >
             {f.name}
           </div>
@@ -95,16 +85,4 @@ export function FileSidebar({
       </div>
     </div>
   )
-}
-
-const buttonStyle: React.CSSProperties = {
-  background: '#222',
-  color: '#d4a017',
-  border: '1px solid #444',
-  borderRadius: 4,
-  padding: '4px 10px',
-  fontFamily: 'monospace',
-  fontSize: 12,
-  cursor: 'pointer',
-  flex: 1
 }
