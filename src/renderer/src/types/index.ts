@@ -92,3 +92,8 @@ export interface ConversionResult {
   gridWidth: number
   gridHeight: number
 }
+
+export interface FileInfo {
+  name: string // base name without extension, e.g. "2026-02-17_21-45"
+  modifiedAt: number // unix timestamp ms
+}

@@ -1,6 +1,7 @@
 import { app, BrowserWindow, globalShortcut, Menu, shell, Tray } from 'electron'
 import { join } from 'path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { registerIpcHandlers } from './ipc'
 
 // Keep tray at module scope to prevent GC
 let tray: Tray | null = null
@@ -110,6 +111,7 @@ if (!gotLock) {
       app.dock.hide()
     }
 
+    registerIpcHandlers()
     mainWindow = createWindow()
     createTray()
 
