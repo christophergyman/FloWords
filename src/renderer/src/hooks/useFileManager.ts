@@ -32,7 +32,10 @@ export function useFileManager(editor: Editor | null, result: ConversionResult |
     markdown += '\n```\n'
 
     if (result && result.colors.length > 0) {
-      const parts = result.colors.map((c) => `${c.shapeIds.length} shape(s)=${c.color}`)
+      const parts = result.colors.map((c) => {
+        const desc = c.labels.length > 0 ? c.labels.join(', ') : `${c.shapeIds.length} shape(s)`
+        return `${desc}=${c.color}`
+      })
       markdown += `\n<!-- Colors: ${parts.join(', ')} -->\n`
     }
 

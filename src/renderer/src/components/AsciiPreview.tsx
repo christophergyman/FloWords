@@ -109,7 +109,7 @@ export function AsciiPreview({
           >
             {result.colors.map((c) => (
               <div key={c.color}>
-                [{c.color}]: {c.shapeIds.length} shape(s)
+                [{c.color}]: {c.labels.length > 0 ? c.labels.join(', ') : `${c.shapeIds.length} shape(s)`}
               </div>
             ))}
           </div>

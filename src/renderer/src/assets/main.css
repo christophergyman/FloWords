@@ -144,3 +144,52 @@ body {
 .terminal-panel *::-webkit-scrollbar-thumb:hover {
   background: var(--term-amber-dim);
 }
+
+/* ── Modal ─────────────────────────────────────────────── */
+.terminal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.terminal-modal {
+  width: 420px;
+  max-width: 90vw;
+  border: 1px solid var(--term-amber-dim);
+  box-shadow: 0 0 30px rgba(212, 160, 23, 0.15), 0 0 60px rgba(212, 160, 23, 0.05);
+}
+
+/* ── Terminal Input ────────────────────────────────────── */
+.terminal-input {
+  width: 100%;
+  background: var(--term-bg);
+  color: var(--term-amber);
+  border: 1px solid var(--term-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: var(--term-font);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+
+.terminal-input:focus {
+  border-color: var(--term-amber-dim);
+  box-shadow: 0 0 8px rgba(212, 160, 23, 0.2);
+}
+
+/* ── Terminal Label ────────────────────────────────────── */
+.terminal-label {
+  display: block;
+  font-family: var(--term-font);
+  font-size: 11px;
+  color: var(--term-amber-dim);
+  margin-bottom: 4px;
+  text-shadow: 0 0 4px var(--term-amber-glow-soft);
+}

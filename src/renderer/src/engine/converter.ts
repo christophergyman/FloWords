@@ -106,20 +106,25 @@ export function convertToAscii(
   }
 
   // 9. Collect colors
-  const colorMap = new Map<string, string[]>()
+  const colorMap = new Map<string, { ids: string[]; labels: string[] }>()
   for (const shape of shapes) {
     const color = shape.color
     if (color && color !== 'black') {
       if (!colorMap.has(color)) {
-        colorMap.set(color, [])
+        colorMap.set(color, { ids: [], labels: [] })
       }
-      colorMap.get(color)!.push(shape.id)
+      const entry = colorMap.get(color)!
+      entry.ids.push(shape.id)
+      const label = 'label' in shape && shape.label ? shape.label : ('text' in shape && shape.text ? shape.text : '')
+      if (label) {
+        entry.labels.push(label)
+      }
     }
   }
 
   const colors: ColorEntry[] = []
-  for (const [color, shapeIds] of colorMap) {
-    colors.push({ color, shapeIds })
+  for (const [color, { ids, labels }] of colorMap) {
+    colors.push({ color, shapeIds: ids, labels })
   }
 
   // 10. Serialize

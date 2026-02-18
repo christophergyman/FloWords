@@ -2,10 +2,12 @@ import { app, BrowserWindow, globalShortcut, Menu, shell, Tray } from 'electron'
 import { join } from 'path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { registerIpcHandlers } from './ipc'
+import { getSettings } from './store'
 
 // Keep tray at module scope to prevent GC
 let tray: Tray | null = null
 let mainWindow: BrowserWindow | null = null
+let currentShortcut: string | null = null
 
 function createWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -52,6 +54,14 @@ function toggleWindow(): void {
     mainWindow.show()
     mainWindow.focus()
   }
+}
+
+function registerHotkey(shortcut: string): void {
+  if (currentShortcut) {
+    globalShortcut.unregister(currentShortcut)
+  }
+  globalShortcut.register(shortcut, toggleWindow)
+  currentShortcut = shortcut
 }
 
 function createTray(): void {
@@ -111,13 +121,13 @@ if (!gotLock) {
       app.dock.hide()
     }
 
-    registerIpcHandlers()
+    registerIpcHandlers({ onHotkeyChange: registerHotkey })
     mainWindow = createWindow()
     createTray()
 
-    // Register global hotkey: Cmd+\ (macOS) or Ctrl+\ (other)
-    const shortcut = process.platform === 'darwin' ? 'Command+\\' : 'Control+\\'
-    globalShortcut.register(shortcut, toggleWindow)
+    // Register global hotkey from settings
+    const settings = getSettings()
+    registerHotkey(settings.hotkey)
   })
 
   app.on('will-quit', () => {

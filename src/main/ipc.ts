@@ -1,11 +1,17 @@
-import { ipcMain, clipboard } from 'electron'
+import { ipcMain, clipboard, dialog } from 'electron'
 import { join } from 'path'
-import { homedir } from 'os'
 import { mkdir, writeFile, readFile, readdir, stat } from 'fs/promises'
+import { getSettings, setSettings } from './store'
 
-const SAVE_DIR = join(homedir(), 'FloWords')
+interface IpcOptions {
+  onHotkeyChange: (newKey: string) => void
+}
 
-export function registerIpcHandlers(): void {
+function getSaveDir(): string {
+  return getSettings().saveDir
+}
+
+export function registerIpcHandlers({ onHotkeyChange }: IpcOptions): void {
   ipcMain.handle('clipboard:write', async (_event, { text }: { text: string }) => {
     clipboard.writeText(text)
   })
@@ -14,9 +20,10 @@ export function registerIpcHandlers(): void {
     'file:save',
     async (_event, { name, tldr, markdown }: { name: string; tldr: string; markdown: string }) => {
       try {
-        await mkdir(SAVE_DIR, { recursive: true })
-        await writeFile(join(SAVE_DIR, `${name}.tldr`), tldr, 'utf-8')
-        await writeFile(join(SAVE_DIR, `${name}.md`), markdown, 'utf-8')
+        const saveDir = getSaveDir()
+        await mkdir(saveDir, { recursive: true })
+        await writeFile(join(saveDir, `${name}.tldr`), tldr, 'utf-8')
+        await writeFile(join(saveDir, `${name}.md`), markdown, 'utf-8')
         return { success: true }
       } catch (err) {
         return { success: false, error: String(err) }
@@ -25,18 +32,20 @@ export function registerIpcHandlers(): void {
   )
 
   ipcMain.handle('file:load', async (_event, { name }: { name: string }) => {
-    const tldr = await readFile(join(SAVE_DIR, `${name}.tldr`), 'utf-8')
+    const saveDir = getSaveDir()
+    const tldr = await readFile(join(saveDir, `${name}.tldr`), 'utf-8')
     return { tldr }
   })
 
   ipcMain.handle('file:list', async () => {
     try {
-      await mkdir(SAVE_DIR, { recursive: true })
-      const entries = await readdir(SAVE_DIR)
+      const saveDir = getSaveDir()
+      await mkdir(saveDir, { recursive: true })
+      const entries = await readdir(saveDir)
       const tldrFiles = entries.filter((e) => e.endsWith('.tldr'))
       const files = await Promise.all(
         tldrFiles.map(async (f) => {
-          const s = await stat(join(SAVE_DIR, f))
+          const s = await stat(join(saveDir, f))
           return {
             name: f.replace(/\.tldr$/, ''),
             modifiedAt: s.mtimeMs
@@ -48,5 +57,28 @@ export function registerIpcHandlers(): void {
     } catch {
       return { files: [] }
     }
+  })
+
+  ipcMain.handle('settings:get', async () => {
+    return getSettings()
+  })
+
+  ipcMain.handle(
+    'settings:set',
+    async (_event, { key, value }: { key: string; value: unknown }) => {
+      const updated = setSettings(key, value)
+      if (key === 'hotkey') {
+        onHotkeyChange(value as string)
+      }
+      return updated
+    }
+  )
+
+  ipcMain.handle('dialog:openDirectory', async () => {
+    const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })
+    if (result.canceled || result.filePaths.length === 0) {
+      return null
+    }
+    return result.filePaths[0]
   })
 }

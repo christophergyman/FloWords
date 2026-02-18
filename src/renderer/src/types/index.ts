@@ -84,6 +84,7 @@ export type ResolvedShape = ResolvedRect | ResolvedEllipse | ResolvedText | Reso
 export interface ColorEntry {
   color: string
   shapeIds: string[]
+  labels: string[]
 }
 
 export interface ConversionResult {
@@ -96,4 +97,10 @@ export interface ConversionResult {
 export interface FileInfo {
   name: string // base name without extension, e.g. "2026-02-17_21-45"
   modifiedAt: number // unix timestamp ms
+}
+
+export interface AppSettings {
+  hotkey: string
+  saveDir: string
+  exportWidth: number
 }

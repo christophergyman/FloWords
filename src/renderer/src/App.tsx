@@ -3,8 +3,10 @@ import { Tldraw, Editor } from 'tldraw'
 import 'tldraw/tldraw.css'
 import { useAsciiConversion } from './hooks/useAsciiConversion'
 import { useFileManager } from './hooks/useFileManager'
+import { useSettings } from './hooks/useSettings'
 import { AsciiPreview } from './components/AsciiPreview'
 import { FileSidebar } from './components/FileSidebar'
+import { Settings } from './components/Settings'
 import type { ConversionMode, ConversionOptions } from './types'
 
 function useDragDivider(initialWidth: number) {
@@ -54,10 +56,12 @@ export default function App(): React.JSX.Element {
   const [zoom, setZoom] = useState(0) // 0 = auto-fit
   const [showPreview, setShowPreview] = useState(true)
   const [showSidebar, setShowSidebar] = useState(true)
+  const [showSettings, setShowSettings] = useState(false)
+  const { settings, update: updateSetting } = useSettings()
 
   const options = useMemo<Partial<ConversionOptions>>(
-    () => ({ mode, zoom }),
-    [mode, zoom]
+    () => ({ mode, zoom, targetWidth: settings?.exportWidth }),
+    [mode, zoom, settings?.exportWidth]
   )
 
   const { result, refresh } = useAsciiConversion(editor, options)
@@ -89,6 +93,21 @@ export default function App(): React.JSX.Element {
   const autoFit = useCallback(() => {
     setZoom(0)
   }, [])
+
+  // Cmd+Shift+C to copy ASCII
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'c') {
+        e.preventDefault()
+        if (result?.ascii) {
+          const text = '```\n' + result.ascii + '\n```'
+          window.api.clipboardWrite(text)
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [result])
 
   return (
     <div style={{ position: 'fixed', inset: 0, display: 'flex' }}>
@@ -163,6 +182,29 @@ export default function App(): React.JSX.Element {
       >
         {showPreview ? '>' : '<'}
       </button>
+
+      {/* Settings gear button */}
+      <button
+        onClick={() => setShowSettings(true)}
+        className="terminal-btn"
+        style={{
+          position: 'fixed',
+          bottom: 8,
+          left: 8,
+          zIndex: 1000
+        }}
+      >
+        Settings
+      </button>
+
+      {/* Settings modal */}
+      {showSettings && settings && (
+        <Settings
+          settings={settings}
+          onUpdate={updateSetting}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
     </div>
   )
 }
